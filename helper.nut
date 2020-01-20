@@ -630,7 +630,7 @@ function _SuperLib_Helper::GetRawCargo()
         }
 
 		// Remember the cargo id of mail
-		_SuperLib_Helper_private_raw_cargo = raw_cargo;
+		_SuperLib_Helper_private_raw_cargo = cargo_list;
     }
 
     return _SuperLib_Heper_private_raw_cargo;
