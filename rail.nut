@@ -58,6 +58,8 @@ class _SuperLib_Rail {
 	// between the two tiles. (if you would like to improve this function
 	// a patch is welcome)
 	function AreRailTilesConnected(fromTile, toTile);
+
+	function GetNearestDepot(fromTile);
 }
 
 function _SuperLib_Rail::GetRailBitMask(rails)
@@ -152,3 +154,8 @@ function _SuperLib_Rail::AreRailTilesConnected(fromTile, toTile)
 			(to_tile_mask & to_tile_need) == to_tile_need;
 }
 
+function _SuperLib_Rail::GetNearestDepot(fromTile)
+{
+	// TODO
+	return 0;
+}
