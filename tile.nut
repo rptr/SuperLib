@@ -179,7 +179,16 @@ class _SuperLib_Tile
 	static function CostToFlattern(top_left_tile, width, height);
 	static function FlatternRect(top_left_tile, width, height);
 	static function IsTileRectBuildableAndFlat(top_left_tile, width, height);
+
 	static function IsBuildableAround(center_tile, width, height);
+
+	/*
+	 * Finds a tile near center_tile which satisfies IsBuildableAround(tile, w, h)
+	 * and which is within max_dist from the original tile
+	 * NOTE: There's probably an efficient algorithm which does this
+	 * Returns null if no tile is found.
+	 */
+	static function FindBuildableArea(center_tile, width, height, max_dist);
 
 	//////////////////////////////////////////////////////////////////////
 	//                                                                  //
@@ -775,6 +784,21 @@ function _SuperLib_Tile::IsBuildableAround(center_tile, width, height)
 	local offset_tile = _SuperLib_Tile.GetTileRelative(center_tile, -width / 2, -height / 2);
 
 	return AITile.IsBuildableRectangle(offset_tile, width, height);
+}
+
+function _SuperLib_Tile::FindBuildableArea(center_tile, width, height, max_dist)
+{
+	local to_try = _SuperLib_Tile.MakeTileRectAroundTile(center_tile, max_dist);
+
+	foreach (tile, v in to_try)
+	{
+		if (_SuperLib_Tile.IsBuildableAround(tile, width, height))
+		{
+			return tile;
+		}
+	}
+
+	return null;
 }
 
 function _SuperLib_Tile::LineList(tileA, tileB)
