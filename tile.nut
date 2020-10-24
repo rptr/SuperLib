@@ -179,6 +179,19 @@ class _SuperLib_Tile
 	static function CostToFlattern(top_left_tile, width, height);
 	static function FlatternRect(top_left_tile, width, height);
 	static function IsTileRectBuildableAndFlat(top_left_tile, width, height);
+	static function IsBuildableAround(center_tile, width, height);
+
+	//////////////////////////////////////////////////////////////////////
+	//                                                                  //
+	//  Other															//
+	//                                                                  //
+	//////////////////////////////////////////////////////////////////////
+
+	/*
+	 * Takes two tiles and returns a list containing all tiles between
+	 * them in a straight line.
+	 */
+	static function LineList(tileA, tileB);
 }
 
 function _SuperLib_Tile::GetTileString(tile)
@@ -755,4 +768,33 @@ function _SuperLib_Tile::IsTileRectBuildableAndFlat(top_left_tile, width, height
 
 	// if all tiles are remaining, then all tiles are flat
 	return count_before == tiles.Count();
+}
+
+function _SuperLib_Tile::IsBuildableAround(center_tile, width, height)
+{
+	local offset_tile = _SuperLib_Tile.GetTileRelative(center_tile, -width / 2, -height / 2);
+
+	return AITile.IsBuildableRectangle(offset_tile, width, height);
+}
+
+function _SuperLib_Tile::LineList(tileA, tileB)
+{
+	local list	= AITileList();
+	local dist 	= sqrt(AIMap.DistanceSquare(tileA, tileB));
+	local x		= AIMap.GetTileX(tileA);
+	local y		= AIMap.GetTileY(tileA);
+	local dx	= AIMap.GetTileX(tileB) - x;
+	local dy	= AIMap.GetTileY(tileB) - y;
+	local step_x = dx / dist;
+	local step_y = dy / dist;
+	local tile	 = tileA;
+
+	for (local i = 0; i < dist; i ++)
+	{
+		tile = AIMap.GetTileIndex((x + i * step_x).tointeger(),
+								  (y + i * step_y).tointeger());
+		list.AddItem(tile, i);
+	}
+
+	return list;
 }
