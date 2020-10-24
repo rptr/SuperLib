@@ -34,6 +34,11 @@ class _SuperLib_Station
 	 */
 	static function GetRoadFrontTiles(station_id);
 
+	/*
+     * Returns an AIList with all "front" tils of a rail station
+     */
+	static function GetRailFrontTiles(station_id);
+
 	static function IsStation(tile, station_id);
 
 	//////////////////////////////////////////////////////////////////////
@@ -77,6 +82,10 @@ class _SuperLib_Station
 	 */
 	static function CostToDemolishStation(station_id);
 
+	/* List of cargoes accepted by this station */
+	static function AcceptedCargo(station_id);
+	/* List of cargoes produced by this station */
+	static function ProducedCargo(station_id);
 
 	/*
 	 * Known limitation: if a different industry is closer than industry_id,
@@ -223,6 +232,20 @@ class _SuperLib_Station
 		local front = AIRoad.GetRoadStationFrontTile(tile);
 		front_tiles.AddItem(front, 0);
 	}
+
+	return front_tiles;
+}
+
+/*static*/ function _SuperLib_Station::GetRailFrontTiles(station_id)
+{
+	local station_tiles = AITileList_StationType(station_id, AIStation.STATION_TRAIN);
+	local front_tiles = AIList();
+
+/* 	foreach(tile, _ in station_tiles) */
+/* 	{ */
+/* 		local front = AIRoad.GetRoadStationFrontTile(tile); */
+/* 		front_tiles.AddItem(front, 0); */
+/* 	} */
 
 	return front_tiles;
 }
@@ -384,3 +407,30 @@ class _SuperLib_Station
 	return vehicle_list;
 }
 
+/*static*/ function _SuperLib_Station::AcceptedCargo(station_id)
+{
+	local cargos = AICargoList();
+	local result = AIList();
+
+	foreach (cargo, v in cargos)
+	{
+		if (_SuperLib_Station.IsCargoAccepted(station_id, cargo))
+			result.AddItem(cargo, v);
+	}
+
+	return result;
+}
+
+/*static*/ function _SuperLib_Station::ProducedCargo(station_id)
+{
+	local cargos = AICargoList();
+	local result = AIList();
+
+	foreach (cargo, v in cargos)
+	{
+		if (_SuperLib_Station.IsCargoSupplied(station_id, cargo))
+			result.AddItem(cargo, v);
+	}
+
+	return result;
+}
