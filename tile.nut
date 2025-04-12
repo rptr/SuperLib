@@ -183,12 +183,11 @@ class _SuperLib_Tile
 	static function IsBuildableAround(center_tile, width, height);
 
 	/*
-	 * Finds a tile near center_tile which satisfies IsBuildableAround(tile, w, h)
+	 * Finds a tile near center_tile which satisfies suitableFunc
 	 * and which is within max_dist from the original tile
-	 * NOTE: There's probably an efficient algorithm which does this
 	 * Returns null if no tile is found.
 	 */
-	static function FindBuildableArea(center_tile, width, height, max_dist);
+	static function FindSuitableArea(center_tile, suitableFunc, max_dist);
 
 	//////////////////////////////////////////////////////////////////////
 	//                                                                  //
@@ -786,16 +785,14 @@ function _SuperLib_Tile::IsBuildableAround(center_tile, width, height)
 	return AITile.IsBuildableRectangle(offset_tile, width, height);
 }
 
-function _SuperLib_Tile::FindBuildableArea(center_tile, width, height, max_dist)
+function _SuperLib_Tile::FindSuitableArea(center_tile, max_dist, suitableFunc)
 {
 	local to_try = _SuperLib_Tile.MakeTileRectAroundTile(center_tile, max_dist);
 
 	foreach (tile, v in to_try)
 	{
-		if (_SuperLib_Tile.IsBuildableAround(tile, width, height))
-		{
+		if (suitableFunc(tile))
 			return tile;
-		}
 	}
 
 	return null;
