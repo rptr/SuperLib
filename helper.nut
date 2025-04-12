@@ -181,6 +181,9 @@ class _SuperLib_Helper
 	/* Get the cargo ID of the mail cargo */
 	static function GetMailCargo();
 
+    /* Get the cargo IDs of non-PAX/mail cargo */
+    static function GetRawCargo();
+
 	/* Gets the cargo in an AIList containing cargoes that has the highest
 	 * availability in the largest town
 	 */
@@ -614,6 +617,25 @@ function _SuperLib_Helper::GetMailCargo()
 	return _SuperLib_Helper_private_mail_cargo;
 }
 
+function _SuperLib_Helper::GetRawCargo()
+{
+    if(!AICargo.IsValidCargo(_SuperLib_Helper_private_raw_cargo))
+    {
+		local cargo_list = AICargoList();
+
+        foreach (cc in [AICargo.CC_PASSENGERS, AICargo.CC_MAIL])
+        {
+            cargo_list.Valuate(AICargo.HasCargoClass, cc);
+            cargo_list.KeepValue(0);
+        }
+
+		// Remember the cargo id of mail
+		_SuperLib_Helper_private_raw_cargo = raw_cargo;
+    }
+
+    return _SuperLib_Heper_private_raw_cargo;
+}
+
 function _SuperLib_Helper::GetCargoWithLargestAvailabilityInLargestTown(cargo_list)
 {
 	if(cargo_list.Count() < 1) // zero cargoes?
@@ -754,6 +776,7 @@ function _SuperLib_Helper::Abs(a)
 // Private static variable - don't touch (read or write) from the outside.
 _SuperLib_Helper_private_pax_cargo <- -1;
 _SuperLib_Helper_private_mail_cargo <- -1;
+_SuperLib_Helper_private_raw_cargo  <- -1;
 
 _SuperLib_Helper_private_town_accepted_cargo_list <- null;
 _SuperLib_Helper_private_town_produced_cargo_list <- null;
